@@ -1,0 +1,4 @@
+[submodule "safestorm"]
+	path = safestorm
+	url = https://github.com/luzhuomi/safestorm
+	branch = master

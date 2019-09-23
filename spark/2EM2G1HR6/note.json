@@ -1,0 +1,926 @@
+{
+  "paragraphs": [
+    {
+      "text": "import org.apache.spark._\nimport org.apache.spark.sql._\nimport org.apache.spark.rdd.RDD\n\nval sparkmaster \u003d \"spark://10.1.0.1:7077\"\nval hadoopmaster \u003d \"hdfs://10.1.0.1:9000\"\n\nval sparkSession \u003d SparkSession.builder().appName(\"-newspaper-preproces\").getOrCreate()\n// .master(sparkmaster)\n\nval df:DataFrame \u003d sparkSession.read\n    .option(\"header\", \"true\")\n    .option(\"delimiter\",\"\\t\")\n    .option(\"inferSchema\", \"true\")\n    .csv(hadoopmaster + \"/data/old-newspaper-sample.tsv\")\n\n// val malay_newspaper \u003d df.filter(row \u003d\u003e row(0) \u003d\u003d \"Malay\")\n\nval malay_newspaper \u003d df.filter(df(\"Language\") \u003d\u003d\u003d \"Malay\") // .sample(true,0.001)\n\nval english_newspaper \u003d df.filter(row \u003d\u003e row(0) \u003d\u003d \"English\") // \n\n// malay_newspaper.count()\n// english_newspaper.count()",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:12:35 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "results": {},
+        "enabled": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "fontSize": 9.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.spark._\nimport org.apache.spark.sql._\nimport org.apache.spark.rdd.RDD\nsparkmaster: String \u003d spark://10.1.0.1:7077\nhadoopmaster: String \u003d hdfs://10.1.0.1:9000\nsparkSession: org.apache.spark.sql.SparkSession \u003d org.apache.spark.sql.SparkSession@7f9a4e6d\ndf: org.apache.spark.sql.DataFrame \u003d [Language: string, Source: string ... 2 more fields]\nmalay_newspaper: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [Language: string, Source: string ... 2 more fields]\nenglish_newspaper: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [Language: string, Source: string ... 2 more fields]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1565967443104_1820363072",
+      "id": "20190815-105012_799906553",
+      "dateCreated": "Aug 16, 2019 10:57:23 PM",
+      "dateStarted": "Aug 23, 2019 10:07:45 AM",
+      "dateFinished": "Aug 23, 2019 10:08:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "malay_newspaper.show",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:45 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "results": {},
+        "enabled": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------+--------------------+----------+--------------------+\n|Language|              Source|      Date|                Text|\n+--------+--------------------+----------+--------------------+\n|   Malay|cyberita.asia1.co...|2011/02/25|Kini Tunisia dan ...|\n|   Malay|        mstar.com.my|2011/08/14|HAART merupakan r...|\n|   Malay|cyberita.asia1.co...|2010/12/09|\u0027Ia sekadar kejan...|\n|   Malay|      bharian.com.my|2011/03/12|Jika kita merasak...|\n|   Malay|cyberita.asia1.co...|2011/02/06|\u0027Golongan penghib...|\n|   Malay|cyberita.asia1.co...|2011/08/14|BERMULA awal dini...|\n|   Malay|   theborneopost.com|2010/03/23|Beliau kemudian m...|\n|   Malay|cyberita.asia1.co...|2010/10/29|Encik Mohamad Sah...|\n|   Malay|cyberita.asia1.co...|2011/07/06|Menurutnya, belia...|\n|   Malay|        mstar.com.my|2009/07/24|Katanya, beliau m...|\n|   Malay|        mstar.com.my|2006/01/20|\"\"\"Meminta sedeka...|\n|   Malay|        kosmo.com.my|2010/12/13|Saingan tahun ini...|\n|   Malay|        mstar.com.my|2011/07/29|Menteri di Jabata...|\n|   Malay|        kosmo.com.my|2011/02/07|Menceritakan peng...|\n|   Malay|        mstar.com.my|2010/03/14|Lukisan itu hakik...|\n|   Malay|        kosmo.com.my|2010/02/27|Begitu juga denga...|\n|   Malay|cyberita.asia1.co...|2010/12/06|Belangkas adalah ...|\n|   Malay|      bharian.com.my|2011/08/11|KUALA LUMPUR: Keh...|\n|   Malay|   theborneopost.com|2010/12/05|“Berjuanglah deng...|\n|   Malay|        kosmo.com.my|2010/06/09|Apa yang pasti, p...|\n+--------+--------------------+----------+--------------------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1565967443107_371400964",
+      "id": "20190815-105640_928489493",
+      "dateCreated": "Aug 16, 2019 10:57:23 PM",
+      "dateStarted": "Aug 23, 2019 10:07:47 AM",
+      "dateFinished": "Aug 23, 2019 10:08:10 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val malay_newspaper_df \u003d malay_newspaper.select(\"Text\").withColumn(\"Label\", lit(1.0))\nmalay_newspaper_df.show()",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:46 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "results": {},
+        "enabled": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "malay_newspaper_df: org.apache.spark.sql.DataFrame \u003d [Text: string, Label: double]\n+--------------------+-----+\n|                Text|Label|\n+--------------------+-----+\n|Kini Tunisia dan ...|  1.0|\n|HAART merupakan r...|  1.0|\n|\u0027Ia sekadar kejan...|  1.0|\n|Jika kita merasak...|  1.0|\n|\u0027Golongan penghib...|  1.0|\n|BERMULA awal dini...|  1.0|\n|Beliau kemudian m...|  1.0|\n|Encik Mohamad Sah...|  1.0|\n|Menurutnya, belia...|  1.0|\n|Katanya, beliau m...|  1.0|\n|\"\"\"Meminta sedeka...|  1.0|\n|Saingan tahun ini...|  1.0|\n|Menteri di Jabata...|  1.0|\n|Menceritakan peng...|  1.0|\n|Lukisan itu hakik...|  1.0|\n|Begitu juga denga...|  1.0|\n|Belangkas adalah ...|  1.0|\n|KUALA LUMPUR: Keh...|  1.0|\n|“Berjuanglah deng...|  1.0|\n|Apa yang pasti, p...|  1.0|\n+--------------------+-----+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1565967443107_-1659043721",
+      "id": "20190815-145820_1193469840",
+      "dateCreated": "Aug 16, 2019 10:57:23 PM",
+      "dateStarted": "Aug 23, 2019 10:08:10 AM",
+      "dateFinished": "Aug 23, 2019 10:08:11 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val english_newspaper_df \u003d english_newspaper.select(\"Text\").withColumn(\"Label\", lit(0.0))\nenglish_newspaper_df.show()",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:47 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "results": {},
+        "enabled": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "english_newspaper_df: org.apache.spark.sql.DataFrame \u003d [Text: string, Label: double]\n+--------------------+-----+\n|                Text|Label|\n+--------------------+-----+\n|He wasn\u0027t home al...|  0.0|\n|WSU\u0027s plans quick...|  0.0|\n|WSU\u0027s plans quick...|  0.0|\n|And when it\u0027s oft...|  0.0|\n|\"\"\"Cheap,\"\" he sa...|  0.0|\n|Born on April 15,...|  0.0|\n|\"\"\"Looking back o...|  0.0|\n|It isn’t a questi...|  0.0|\n|Barrett acknowled...|  0.0|\n|Barrett acknowled...|  0.0|\n|\"Greg Roberts, An...|  0.0|\n|In light of Alex ...|  0.0|\n|Medina Sting 2, N...|  0.0|\n|\"\"\"(Abby\u0027s) one o...|  0.0|\n|\"\"\"(Abby\u0027s) one o...|  0.0|\n|Fire crews battle...|  0.0|\n|Perhaps it\u0027s time...|  0.0|\n|Bynum won the tip...|  0.0|\n|Bynum won the tip...|  0.0|\n|The prepaid-tuiti...|  0.0|\n+--------------------+-----+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1565967443107_770567787",
+      "id": "20190815-150110_1744544006",
+      "dateCreated": "Aug 16, 2019 10:57:23 PM",
+      "dateStarted": "Aug 23, 2019 10:08:11 AM",
+      "dateFinished": "Aug 23, 2019 10:08:13 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n# A generic n-gram function",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:47 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Error while parsing rule \u0027Root/Sequence/ZeroOrMore/Sequence\u0027 at input position (line 1, pos 1):\n# A generic n-gram function\n^\n\njava.lang.NullPointerException"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566025346553_69702280",
+      "id": "20190817-150226_1459840622",
+      "dateCreated": "Aug 17, 2019 3:02:26 PM",
+      "dateStarted": "Aug 23, 2019 10:07:47 AM",
+      "dateFinished": "Aug 23, 2019 10:07:48 AM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// val punct_re \u003d \"[\u0027\\\".,!?\\\\:()-/#\u003d$_]\".r\nval punct_re \u003d \"[^\\\\w\\\\s]\".r\n\ndef remove_punct(tweet:String):String \u003d punct_re.replaceAllIn(tweet, \"\")\n\ndef drop_n_zip_helper[A](acc:List[List[A]], w:List[A], n:Int):List[List[A]] \u003d n match {\n    // the size of the inner list \u003d\u003d n\n    case 0 \u003d\u003e acc\n    case _ \u003d\u003e {\n        val acc_next \u003d acc.zip(w) // :List[(List[A],A)]\n                          .map( x \u003d\u003e x match { case (as,a) \u003d\u003e as ++ List(a) } ) // List[List[A]]\n        drop_n_zip_helper(acc_next, w.drop(1), n-1)\n    }\n}\n\ndef drop_n_zip[A](w:List[A],n:Int):List[List[A]] \u003d n match {\n    case 0 \u003d\u003e List()\n    case _ \u003d\u003e {\n        val acc \u003d w.map(a \u003d\u003e List(a))\n        drop_n_zip_helper(acc, w.drop(1), n-1)\n    }\n}\n\n/* \nval l \u003d List(1,2,3,4)\ndrop_n_zip(l, 3)\nyields  List(List(1, 2, 3), List(2, 3, 4))\n*/\n\n\ndef ngram(s:String, n:Int):List[String] \u003d {\n    val words \u003d remove_punct(s).toLowerCase.split(\" \").toList\n    words.flatMap((w:String) \u003d\u003e drop_n_zip(w.toList, n).map( l \u003d\u003e l.mkString(\"\")))\n}\n\n\nngram(\"hello world!!!\", 3)",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:47 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "results": {},
+        "enabled": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "punct_re: scala.util.matching.Regex \u003d [^\\w\\s]\nremove_punct: (tweet: String)String\ndrop_n_zip_helper: [A](acc: List[List[A]], w: List[A], n: Int)List[List[A]]\ndrop_n_zip: [A](w: List[A], n: Int)List[List[A]]\nngram: (s: String, n: Int)List[String]\nres27: List[String] \u003d List(hel, ell, llo, wor, orl, rld)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1565967443107_-983303478",
+      "id": "20190815-150444_2092174614",
+      "dateCreated": "Aug 16, 2019 10:57:23 PM",
+      "dateStarted": "Aug 23, 2019 10:08:12 AM",
+      "dateFinished": "Aug 23, 2019 10:08:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nWe lift the ngram function to the level of the dataframe",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:47 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Error while parsing rule \u0027Root/Sequence/ZeroOrMore/Sequence\u0027 at input position (line 1, pos 1):\nWe lift the ngram function to the level of the dataframe\n^\n\njava.lang.NullPointerException"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566025448692_1271611871",
+      "id": "20190817-150408_2084636521",
+      "dateCreated": "Aug 17, 2019 3:04:08 PM",
+      "dateStarted": "Aug 23, 2019 10:07:48 AM",
+      "dateFinished": "Aug 23, 2019 10:07:48 AM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// adopted from https://stackoverflow.com/questions/35904136/how-do-i-detect-if-a-spark-dataframe-has-a-column\nimport scala.util.Try\n\n// For implicit conversions from RDDs to DataFrames\n// import spark.implicits._\n\ndef hasColumn(df: DataFrame, path: String) \u003d Try(df(path)).isSuccess\n/*\ndef ngram_df(in:DataFrame,n:Int):Option[DataFrame] \u003d {\n    if (hasColumn(df, \"Text\")) {\n        val text_df \u003d df.select(\"Text\")\n        Some(text_df.map((row:Row) \u003d\u003e Row(ngram(row.getAs[String](\"Text\"),n)))) // doesn\u0027t work because we can put non-primitive type values in a Row.\n    } else {\n        None\n    }\n}\n*/\n\ndef ngram_df(df:DataFrame, n:Int):Option[Dataset[List[String]]] \u003d {\n    if (hasColumn(df, \"Text\")) {\n        val text_df \u003d df.select(\"Text\")\n        Some(text_df.map((row:Row) \u003d\u003e ngram(row.getAs[String](\"Text\"),n)))\n    } else {\n        None\n    }\n}\n\n\n// a type version, i.e. RDD or DataSet would eliminate the need of checking hasColumn. ",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:47 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "results": {},
+        "enabled": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import scala.util.Try\nhasColumn: (df: org.apache.spark.sql.DataFrame, path: String)Boolean\nngram_df: (df: org.apache.spark.sql.DataFrame, n: Int)Option[org.apache.spark.sql.Dataset[List[String]]]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1565967443107_-1451720340",
+      "id": "20190816-095741_1499402534",
+      "dateCreated": "Aug 16, 2019 10:57:23 PM",
+      "dateStarted": "Aug 23, 2019 10:08:14 AM",
+      "dateFinished": "Aug 23, 2019 10:08:16 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\ntest case",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:47 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003etest case\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566025469572_1993213629",
+      "id": "20190817-150429_1513845475",
+      "dateCreated": "Aug 17, 2019 3:04:29 PM",
+      "dateStarted": "Aug 23, 2019 10:07:48 AM",
+      "dateFinished": "Aug 23, 2019 10:07:48 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "ngram_df(english_newspaper_df, 3) match {\n    case Some(ds) \u003d\u003e ds.show() \n    case None \u003d\u003e println(\"invalid column\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------------------+\n|               value|\n+--------------------+\n|[was, asn, snt, h...|\n|[wsu, sus, pla, l...|\n|[wsu, sus, pla, l...|\n|[and, whe, hen, i...|\n|[che, hea, eap, s...|\n|[bor, orn, apr, p...|\n|[loo, ook, oki, k...|\n|[isn, snt, que, u...|\n|[bar, arr, rre, r...|\n|[bar, arr, rre, r...|\n|[gre, reg, rob, o...|\n|[lig, igh, ght, a...|\n|[med, edi, din, i...|\n|[abb, bby, bys, o...|\n|[abb, bby, bys, o...|\n|[fir, ire, cre, r...|\n|[per, erh, rha, h...|\n|[byn, ynu, num, w...|\n|[byn, ynu, num, w...|\n|[the, pre, rep, e...|\n+--------------------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566024001627_-1346689761",
+      "id": "20190817-144001_1677601493",
+      "dateCreated": "Aug 17, 2019 2:40:01 PM",
+      "dateStarted": "Aug 23, 2019 10:08:16 AM",
+      "dateFinished": "Aug 23, 2019 10:08:19 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md \n\n# TFIDF\n",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch1\u003eTFIDF\u003c/h1\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566025334264_-640190089",
+      "id": "20190817-150214_1063200933",
+      "dateCreated": "Aug 17, 2019 3:02:14 PM",
+      "dateStarted": "Aug 23, 2019 10:07:48 AM",
+      "dateFinished": "Aug 23, 2019 10:07:48 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "\ndef term_freq(df:DataFrame, n:Int):Option[Dataset[(String, Int)]] \u003d {\n    ngram_df(df, n) match {\n        case None \u003d\u003e None\n        case Some(ds) \u003d\u003e Some(ds.flatMap( ts \u003d\u003e ts.map(x \u003d\u003e (x,1))).groupByKey(_._1)                            \n                                                                   .reduceGroups((a:(String,Int), b:(String,Int)) \u003d\u003e (a._1, a._2 + b._2)).map(x \u003d\u003e x._2))\n                                                                \n    }\n}\n",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "term_freq: (df: org.apache.spark.sql.DataFrame, n: Int)Option[org.apache.spark.sql.Dataset[(String, Int)]]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566025502674_-1941967473",
+      "id": "20190817-150502_1860650454",
+      "dateCreated": "Aug 17, 2019 3:05:02 PM",
+      "dateStarted": "Aug 23, 2019 10:08:17 AM",
+      "dateFinished": "Aug 23, 2019 10:08:20 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val test_df \u003d List(\"hello fellow singaporean\", \"welcome home\").toDF(\"Text\")",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "test_df: org.apache.spark.sql.DataFrame \u003d [Text: string]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566525393691_-1239392518",
+      "id": "20190823-095633_1561513587",
+      "dateCreated": "Aug 23, 2019 9:56:33 AM",
+      "dateStarted": "Aug 23, 2019 10:08:20 AM",
+      "dateFinished": "Aug 23, 2019 10:08:20 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// val english_newspaper_df_sample \u003d english_newspaper_df.sample(true, 0.0001)\nterm_freq(test_df, 2) match {\n    case Some(ds) \u003d\u003e ds.show() \n    case None \u003d\u003e println(\"invalid column\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+---+---+\n| _1| _2|\n+---+---+\n| re|  1|\n| in|  1|\n| ho|  1|\n| ow|  1|\n| ea|  1|\n| me|  2|\n| co|  1|\n| el|  3|\n| ap|  1|\n| ll|  2|\n| fe|  1|\n| si|  1|\n| lc|  1|\n| ga|  1|\n| ng|  1|\n| po|  1|\n| an|  1|\n| om|  2|\n| or|  1|\n| lo|  2|\n+---+---+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566027020268_231684856",
+      "id": "20190817-153020_1390065031",
+      "dateCreated": "Aug 17, 2019 3:30:20 PM",
+      "dateStarted": "Aug 23, 2019 10:08:20 AM",
+      "dateFinished": "Aug 23, 2019 10:08:22 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "def doc_freq(df:DataFrame, n:Int):Option[Dataset[(String, Int)]] \u003d {\n    ngram_df(df, n) match {\n        case None \u003d\u003e None\n        case Some(ds) \u003d\u003e Some(ds.flatMap( ts \u003d\u003e ts.toSet.toList.map((x:String) \u003d\u003e (x,1))).groupByKey(_._1)                            \n                                                                   .reduceGroups((a:(String,Int), b:(String,Int)) \u003d\u003e (a._1, a._2 + b._2)).map(x \u003d\u003e x._2))\n    }\n}\n",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "doc_freq: (df: org.apache.spark.sql.DataFrame, n: Int)Option[org.apache.spark.sql.Dataset[(String, Int)]]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566028036947_1975794827",
+      "id": "20190817-154716_264976066",
+      "dateCreated": "Aug 17, 2019 3:47:16 PM",
+      "dateStarted": "Aug 23, 2019 10:08:21 AM",
+      "dateFinished": "Aug 23, 2019 10:08:23 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "doc_freq(test_df, 2) match {\n    case Some(ds) \u003d\u003e ds.show() \n    case None \u003d\u003e println(\"invalid column\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+---+---+\n| _1| _2|\n+---+---+\n| re|  1|\n| in|  1|\n| ho|  1|\n| ow|  1|\n| ea|  1|\n| me|  1|\n| co|  1|\n| el|  2|\n| ap|  1|\n| ll|  1|\n| fe|  1|\n| si|  1|\n| lc|  1|\n| ga|  1|\n| ng|  1|\n| po|  1|\n| an|  1|\n| om|  1|\n| or|  1|\n| lo|  1|\n+---+---+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566105298364_-1996209069",
+      "id": "20190818-131458_85864867",
+      "dateCreated": "Aug 18, 2019 1:14:58 PM",
+      "dateStarted": "Aug 23, 2019 10:08:23 AM",
+      "dateFinished": "Aug 23, 2019 10:08:23 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.sql.Encoder\nimport org.apache.spark.sql.Dataset\nimport scala.math \n\ndef safeEquiJoin[T, U, K](ds1: Dataset[T], ds2: Dataset[U])\n    (f: T \u003d\u003e K, g: U \u003d\u003e K)\n    (implicit e1: Encoder[(K, T)], e2: Encoder[(K, U)], e3: Encoder[(T, U)]) \u003d {\n  val ds1_ \u003d ds1.map(x \u003d\u003e (f(x), x))\n  val ds2_ \u003d ds2.map(x \u003d\u003e (g(x), x))\n  ds1_.joinWith(ds2_, ds1_(\"_1\") \u003d\u003d\u003d ds2_(\"_1\")).map(x \u003d\u003e (x._1._2, x._2._2))\n}\n\ndef tfidf(d:DataFrame, n:Int):Option[Dataset[(String, Double)]] \u003d for {\n    tf \u003c- term_freq(d, n);\n    df \u003c- doc_freq(d, n)\n} yield {\n    val dCount:Long \u003d d.count()\n    val tdf:Dataset[((String, Int), (String, Int))] \u003d safeEquiJoin(tf, df)(p \u003d\u003e p._1, p \u003d\u003e p._1)\n    val results \u003d tdf.map( (p:((String, Int), (String, Int))) \u003d\u003e (p._1._1,  p._1._2 * (scala.math.log(dCount / p._2._2)) ))\n    results.sort($\"_2\".desc)\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.spark.sql.Encoder\nimport org.apache.spark.sql.Dataset\nimport scala.math\nsafeEquiJoin: [T, U, K](ds1: org.apache.spark.sql.Dataset[T], ds2: org.apache.spark.sql.Dataset[U])(f: T \u003d\u003e K, g: U \u003d\u003e K)(implicit e1: org.apache.spark.sql.Encoder[(K, T)], implicit e2: org.apache.spark.sql.Encoder[(K, U)], implicit e3: org.apache.spark.sql.Encoder[(T, U)])org.apache.spark.sql.Dataset[(T, U)]\ntfidf: (d: org.apache.spark.sql.DataFrame, n: Int)Option[org.apache.spark.sql.Dataset[(String, Double)]]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566105469760_1777837221",
+      "id": "20190818-131749_540100831",
+      "dateCreated": "Aug 18, 2019 1:17:49 PM",
+      "dateStarted": "Aug 23, 2019 10:08:23 AM",
+      "dateFinished": "Aug 23, 2019 10:08:24 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import spark.implicits._\n\n\nval test_df2 \u003d tfidf(test_df, 2)\ntest_df2 match { \n    case Some(df) \u003d\u003e df.show()\n    case None \u003d\u003e println(\"failed\")\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import spark.implicits._\ntest_df2: Option[org.apache.spark.sql.Dataset[(String, Double)]] \u003d Some([_1: string, _2: double])\n+---+------------------+\n| _1|                _2|\n+---+------------------+\n| me|1.3862943611198906|\n| om|1.3862943611198906|\n| lo|1.3862943611198906|\n| ll|1.3862943611198906|\n| ng|0.6931471805599453|\n| si|0.6931471805599453|\n| in|0.6931471805599453|\n| fe|0.6931471805599453|\n| ea|0.6931471805599453|\n| lc|0.6931471805599453|\n| co|0.6931471805599453|\n| we|0.6931471805599453|\n| an|0.6931471805599453|\n| ga|0.6931471805599453|\n| ap|0.6931471805599453|\n| re|0.6931471805599453|\n| ho|0.6931471805599453|\n| ow|0.6931471805599453|\n| or|0.6931471805599453|\n| po|0.6931471805599453|\n+---+------------------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566466515289_1578321239",
+      "id": "20190822-173515_626917311",
+      "dateCreated": "Aug 22, 2019 5:35:15 PM",
+      "dateStarted": "Aug 23, 2019 10:08:24 AM",
+      "dateFinished": "Aug 23, 2019 10:08:27 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "\n\nval top_tfidf \u003d tfidf(english_newspaper_df union malay_newspaper_df, 3) match {\n    case Some(ds) \u003d\u003e Some(ds)\n    case None \u003d\u003e None\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "top_tfidf: Option[org.apache.spark.sql.Dataset[(String, Double)]] \u003d Some([_1: string, _2: double])\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566111136972_705445681",
+      "id": "20190818-145216_1011086501",
+      "dateCreated": "Aug 18, 2019 2:52:16 PM",
+      "dateStarted": "Aug 23, 2019 10:08:25 AM",
+      "dateFinished": "Aug 23, 2019 10:08:28 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "case class HyperParams(top_n:Int, gram:Int)\n\nval hyper_params \u003d HyperParams(20, 3)\n\nval top_n_tfidf:List[(String, Double)] \u003d  top_tfidf match {\n    case Some(ds) \u003d\u003e hyper_params match {\n        case HyperParams(top_n, gram) \u003d\u003e ds.head(top_n).toList\n    }\n    case None \u003d\u003e List()\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "defined class HyperParams\nhyper_params: HyperParams \u003d HyperParams(20,3)\ntop_n_tfidf: List[(String, Double)] \u003d List((the,624334.9942098567), (ang,491363.02538559795), (ing,403031.12128376076), (kan,362687.1827864497), (per,354073.95173942245), (ara,351587.8169841433), (eng,347666.84487191), (men,347640.3437908544), (ala,345722.3011209675), (ata,335273.9049424844), (gan,333111.2857391374), (ent,329099.1985811303), (tan,319966.4426069986), (nga,318896.3862562696), (dan,316709.04918953136), (aka,312125.5617005045), (for,311656.3856774765), (nya,309813.05985356163), (and,309420.9014019596), (ion,308217.59789650753))\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566111924038_-792660388",
+      "id": "20190818-150524_1025366016",
+      "dateCreated": "Aug 18, 2019 3:05:24 PM",
+      "dateStarted": "Aug 23, 2019 10:08:27 AM",
+      "dateFinished": "Aug 23, 2019 10:09:10 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.ml.linalg.{Vectors, Vector}\n\ndef feature(x:String, hyper_params:HyperParams, top_tfidf:List[(String, Double)]):org.apache.spark.ml.linalg.Vector \u003d hyper_params match {\n    case HyperParams(top_n, gram) \u003d\u003e {\n        val ngrams \u003d ngram(x, gram)\n        val num_of_ngrams \u003d ngrams.length\n        val ngrams_set \u003d ngrams.toSet\n        val scores:Seq[Double] \u003d for {\n            tfidf \u003c- top_tfidf.map(_._1)\n        } yield {\n            if (ngrams_set.contains(tfidf)) {\n                val freq \u003d ngrams.filter( t \u003d\u003e t \u003d\u003d tfidf).length\n                freq * 1.0 / num_of_ngrams\n            } else {\n                0.0\n            }\n        }\n        Vectors.dense(scores.toArray) \n    }\n}\n\nimport sparkSession.implicits._\nimport org.apache.spark.sql.{Encoder, Encoders}\n\ncase class FeatureTuple(label:Double, features:org.apache.spark.ml.linalg.Vector)\nimplicit val enc: Encoder[FeatureTuple] \u003d Encoders.product[FeatureTuple]\n\n\ndef mkFeatures(df:DataFrame,hyper_params:HyperParams, top_tfidf:List[(String, Double)]):Option[Dataset[FeatureTuple]] \u003d hyper_params match {\n    case HyperParams(top_n, gram) \u003d\u003e {\n        if (hasColumn(df, \"Text\") \u0026\u0026 hasColumn(df, \"Label\")) {\n            Some(df.map((row:Row) \u003d\u003e FeatureTuple(row.getAs[Double](\"Label\"), feature(row.getAs[String](\"Text\"), hyper_params, top_tfidf))))\n        } else {\n            None\n        }\n    }\n}",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.spark.ml.linalg.{Vectors, Vector}\nfeature: (x: String, hyper_params: HyperParams, top_tfidf: List[(String, Double)])org.apache.spark.ml.linalg.Vector\nimport sparkSession.implicits._\nimport org.apache.spark.sql.{Encoder, Encoders}\ndefined class FeatureTuple\nenc: org.apache.spark.sql.Encoder[FeatureTuple] \u003d class[label[0]: double, features[0]: vector]\nmkFeatures: (df: org.apache.spark.sql.DataFrame, hyper_params: HyperParams, top_tfidf: List[(String, Double)])Option[org.apache.spark.sql.Dataset[FeatureTuple]]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566203969755_-465291387",
+      "id": "20190819-163929_990828320",
+      "dateCreated": "Aug 19, 2019 4:39:29 PM",
+      "dateStarted": "Aug 23, 2019 10:08:29 AM",
+      "dateFinished": "Aug 23, 2019 10:09:12 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.ml.classification.LogisticRegression\n\n// Load training data\n// val training \u003d spark.read.format(\"libsvm\").load(hadoopmaster + \"/data/mllib/sample_libsvm_data.txt\")\n\nval allData \u003d mkFeatures(english_newspaper_df union malay_newspaper_df, hyper_params, top_n_tfidf) match { \n    case Some(x) \u003d\u003e x\n    case None    \u003d\u003e sparkSession.createDataset(List():List[FeatureTuple])\n}\n\nval splitted \u003d allData.randomSplit(Array(0.8,0.2))\n\nval training \u003d splitted(0)\nval testing \u003d splitted(1)\n\n",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.spark.ml.classification.LogisticRegression\nallData: org.apache.spark.sql.Dataset[FeatureTuple] \u003d [label: double, features: vector]\nsplitted: Array[org.apache.spark.sql.Dataset[FeatureTuple]] \u003d Array([label: double, features: vector], [label: double, features: vector])\ntraining: org.apache.spark.sql.Dataset[FeatureTuple] \u003d [label: double, features: vector]\ntesting: org.apache.spark.sql.Dataset[FeatureTuple] \u003d [label: double, features: vector]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566112416013_-2112231979",
+      "id": "20190818-151336_505286069",
+      "dateCreated": "Aug 18, 2019 3:13:36 PM",
+      "dateStarted": "Aug 23, 2019 10:09:11 AM",
+      "dateFinished": "Aug 23, 2019 10:09:13 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val lr \u003d new LogisticRegression()\n   .setMaxIter(100)\n  //.setRegParam(0.3)\n  //.setElasticNetParam(0.8)\n\n  \nval lrModel \u003d lr.fit(training)\n// training.show()\n\n",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "lr: org.apache.spark.ml.classification.LogisticRegression \u003d logreg_2fa5aa2232f0\nlrModel: org.apache.spark.ml.classification.LogisticRegressionModel \u003d logreg_2fa5aa2232f0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566203696837_1269006702",
+      "id": "20190819-163456_116578363",
+      "dateCreated": "Aug 19, 2019 4:34:56 PM",
+      "dateStarted": "Aug 23, 2019 10:09:12 AM",
+      "dateFinished": "Aug 23, 2019 10:09:30 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator\n\nval predictions \u003d lrModel.transform(testing)\n\n// predictions.show()\n\n\nval evaluator \u003d new BinaryClassificationEvaluator()\n  // .setMetricName(\"accuracy\")\nval accuracy \u003d evaluator.evaluate(predictions)\nprintln(\"Test Error \u003d \" + (1.0 - accuracy))\n\n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:49 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator\npredictions: org.apache.spark.sql.DataFrame \u003d [label: double, features: vector ... 3 more fields]\nevaluator: org.apache.spark.ml.evaluation.BinaryClassificationEvaluator \u003d binEval_506f1b4fbbd2\naccuracy: Double \u003d 0.99745362275056\nTest Error \u003d 0.0025463772494399572\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1566463257551_-129656797",
+      "id": "20190822-164057_10046197",
+      "dateCreated": "Aug 22, 2019 4:40:57 PM",
+      "dateStarted": "Aug 23, 2019 10:09:14 AM",
+      "dateFinished": "Aug 23, 2019 10:09:42 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "dateUpdated": "Aug 23, 2019 10:07:49 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1566479949795_2000476370",
+      "id": "20190822-211909_1071393279",
+      "dateCreated": "Aug 22, 2019 9:19:09 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "old-news-paper-untyped",
+  "id": "2EM2G1HR6",
+  "angularObjects": {
+    "2DMWDE5U4:shared_process": [],
+    "2DMCDG7VK:shared_process": [],
+    "2DJY4VG9T:shared_process": [],
+    "2DKR8YC46:shared_process": [],
+    "2DJUVXKUC:shared_process": [],
+    "2DKEGBM8T:shared_process": [],
+    "2DNEDDGHY:shared_process": [],
+    "2DJQHTAP9:shared_process": [],
+    "2DNQFPWWF:shared_process": [],
+    "2DME9Y5CY:shared_process": [],
+    "2DKYNMSQD:shared_process": [],
+    "2DMU6GXS3:shared_process": [],
+    "2DN93GH3W:shared_process": [],
+    "2DJH6Y3GN:shared_process": [],
+    "2DJ9U18MZ:shared_process": [],
+    "2DND5XEBG:shared_process": [],
+    "2DMVRUAJH:shared_process": [],
+    "2DJJUGTKZ:shared_process": [],
+    "2DJ8ZBB62:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
